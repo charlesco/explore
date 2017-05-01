@@ -1,0 +1,27 @@
+{% extends "base2.html" %}
+{% load staticfiles %}
+
+  {% block content1 %}
+  <h3>Model Results</h3>
+
+  <table  class="table">
+<tr><th>Cluster/ Feature </th>
+  {% for f in features %}
+<th>{{f}}  </th>
+{% endfor %}
+</tr>
+{% for line in table %}
+  <tr>
+    {% for elt in line %}
+    <td>{{elt}}  </td>
+    {% endfor %}
+   </tr>
+{% endfor %}
+</table>
+
+<table  class="table">
+  <tr><th>Score</th>  </tr>
+  <tr>  <td>{{score}}  </td> </tr>
+</table>
+
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content1 %}
+<h2>Home <br> <small>Try out scikit-learn features in two clicks with your own data!</small></h2>
+<br>
+<h4>Start to upload your file and indicate header row and/or index column existence.</h4>
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="Upload my file" />
+</form>
+{% endblock %}

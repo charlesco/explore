@@ -1,0 +1,26 @@
+{% extends "base2.html" %}
+
+  {% block content1 %}
+  <h3>Model Results</h3>
+
+  <table  class="table">
+<tr><th>True /Predicted Feature </th>
+  {% for f in features %}
+<th>{{f}}  </th>
+{% endfor %}
+</tr>
+{% for line in confu %}
+  <tr>
+    {% for elt in line %}
+    <td>{{elt}}  </td>
+    {% endfor %}
+   </tr>
+{% endfor %}
+</table>
+
+<table  class="table">
+  <tr><th>Score on train set</th> <th>Score on test set</th>  </tr>
+  <tr>  <td>{{score_train}}  </td>  <td>{{score_test}}</td>  </tr>
+</table>
+
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base2.html" %}
+{% block content1 %}
+<h3>Model Results</h3>
+
+  <table  class="table">
+<tr><th>Variable/ Feature </th> <th>Coefficient  </th><th>p-value  </th>  </tr>
+{% for line in coeff %}
+  <tr>
+    {% for elt in line %}
+    <td>{{elt}}  </td>
+    {% endfor %}
+   </tr>
+{% endfor %}
+</table>
+
+<table  class="table">
+  <tr><th>Mean Squared Error</th> <th>Adjusted R-squared</th> <th>F-statistic</th> <th>p-value (F-statistic)</th> </tr>
+  <tr>  <td>{{mse}}  </td>  <td>{{AdjRsquared}}</td>
+    {% for f in fisher %}
+    <td>{{f}}  </td>
+    {% endfor %}
+  </tr>
+</table>
+
+{% endblock %}

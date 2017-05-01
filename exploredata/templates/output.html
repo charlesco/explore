@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<h2>Model Results</h2>
+<div class="container">
+<div class="row" >
+  {% block results %}
+  {% endblock %}
+
+
+  </div>
+  </div>
+
+  <h4>Change (or not) the type of your variable(s) (how the model should interpret it) </h4>
+  <div class="row">
+
+  <form action="" method="post" >
+
+
+  {% csrf_token %}
+
+  <div class="bs-example">
+    <table  class="table" style="margin-left:2%;">
+      <tr>
+  {% for name in dico_forms.keys %}
+  <th>{{ name }}</th>
+  {% endfor %}
+  <th> Model </th>
+  </tr>
+  <tr>
+  {% for form in dico_forms.values %}
+  <td>
+  {{ form.as_p }}
+  </td>
+  {% endfor %}
+  <td>
+    {% for field in model_form %}
+
+    {{field}}
+    {% endfor %}
+    <br>
+      <input type="submit" value="Perform model fit" style="margin-left:5%;" id="Perform"/>
+     </td>
+    <tr>
+    </table>
+
+
+
+
+
+  </form>
+
+  </div>
+  <script>
+  //Hide by default as no model is initially selected
+  var modelname=document.getElementById("id_modelling-name");
+  var testsize = document.getElementById("id_modelling-test_size");
+  if(modelname.value!= 'L' &&  modelname.value!= 'K' ){
+  testsize.style.display="none";
+}
+else{
+  testsize.value=33
+}
+  //Show test_size choice only if a predictive model is selected
+  function Change() {
+    var testsize = document.getElementById("id_modelling-test_size");
+    var modelname=document.getElementById("id_modelling-name");
+    var button = document.getElementById("Perform");
+    //window.console.log(modelname.value);
+
+    var inputs = document.getElementsByTagName("input"), item;
+    var targets = [];
+    for (var i = 0, len = inputs.length; i < len; i++) {
+      item = inputs[i];
+      if( item.id && item.id.indexOf("istarget") >0 && item.checked===true){
+        targets.push(item.id);
+        button.style.display="inline";
+      }
+    }
+    if( targets.length==0 && (modelname.value=== 'L' ||  modelname.value=== 'K' )){
+      button.style.display="none";
+    }
+    //window.console.log(targets);
+    //Test if selected model is a predictive one (Linear, K-Nearest Neighbors)
+    if ( modelname.value=== 'L' ||  modelname.value=== 'K' ) {
+      testsize.style.display="inline";
+      //window.console.log(testsize.value)
+      if(testsize.value==''){
+        testsize.value=33
+      }
+    } else {
+      testsize.style.display="none";
+      button.style.display="none";
+    }
+  }
+
+  modelname.onchange=Change;
+  var inputs = document.getElementsByTagName("input"), item;
+  for (var i = 0, len = inputs.length; i < len; i++) {
+    item = inputs[i];
+    if( item.id && item.id.indexOf("istarget") >0 ){
+      item.onchange=Change;
+    }
+  }
+  </script>
+
+  <div class="row">
+  <div class="bs-example">
+      <table  class="table" style="margin-left:2%;">
+      <tr>
+        <th >Statistic</th>
+        {% for name in quanti %}
+        <th>{{ name }}</th>
+        {% endfor %}
+      </tr>
+      {% for stat, liste in summary.items %}
+      <tr>
+        <td>{{ stat }}</td>
+        {% for val  in liste %}
+        <td>{{ val }}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+      </table>
+  </div>
+
+  <div class="bs-example">
+    <table  class="table" style="margin-left:2%;">
+    <tr>
+      {% for name in quali %}
+      <th>{{ name }}-feature</th>
+        <th>Feature count</th>
+      {% endfor %}
+    </tr>
+    {% for line in summary2 %}
+    <tr>
+    {% for el in line %}
+      <td>{{ el }} </td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+    </table>
+    </div>
+  </div>
+  {% endblock %}

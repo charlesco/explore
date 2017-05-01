@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+
+{% block content2 %}
+
+<h4>Change (or not) the type of your variable(s) (how the model should interpret it) </h4>
+<div class="row">
+
+<form action="" method="post" >
+{% csrf_token %}
+
+<div class="bs-example">
+<table  class="table" style="margin-left:2%;">
+<tr>{% for name in dico_forms.keys %}<th>{{ name }}</th>{% endfor %}</tr>
+<tr>{% for form in dico_forms.values %}<td>{{ form.as_p }}</td>{% endfor %}<tr>
+</table>
+</div>
+
+<div class="bs-example">
+<table  class="table" style="margin-left:2%;">
+<tr><th>Model</th><th id="test_size">Proportion of dataset used for testing</th>
+<th id="intercept">Include a constant regressor</th>
+<th id="n_neighbors">Number of neighbors</th>
+<th id="n_clusters">Number of clusters</th></tr>
+<tr>{% for field in model_form %}<td id={{field.name}}>{{ field}}</td>{% endfor %}</tr>
+<tr><td><input type="submit" value="Perform model fit" style="margin-left:5%;" id="Perform"/></td>
+<td id="test_size"></td><td id="intercept"></td><td id="n_neighbors"></td><td id="n_clusters"></td></tr>
+</table>
+</div>
+
+</form>
+
+
+<script>
+//Hide by default as no model is initially selected
+var testsize = document.getElementById("test_size");
+testsize.style.display="none";
+var modelname=document.getElementById("id_modelling-name");
+//Hide submit button
+var button = document.getElementById("Perform");
+button.style.display="none";
+var intercept = document.getElementById("intercept");
+intercept.style.display="none";
+var n_neighbors = document.getElementById("n_neighbors");
+n_neighbors.style.display="none";
+var n_clusters = document.getElementById("n_clusters");
+n_clusters.style.display="none";
+//Show test_size choice only if a predictive model is selected
+function Change() {
+  var modelname=document.getElementById("id_modelling-name");
+  var button = document.getElementById("Perform");
+  var testsize = document.getElementById("test_size");
+  var intercept = document.getElementById("intercept");
+  var n_neighbors = document.getElementById("n_neighbors");
+  var n_clusters = document.getElementById("n_clusters");
+  //window.console.log(modelname.value);
+
+  var inputs = document.getElementsByTagName("input"), item;
+  var targets = [];
+  for (var i = 0, len = inputs.length; i < len; i++) {
+    item = inputs[i];
+    if( item.id && item.id.indexOf("istarget") >0 && item.checked===true){
+      targets.push(item.id);
+      //button.style.display="inline";
+    }
+  }
+  if(modelname.value=== ''){
+    button.style.display="none";
+    testsize.style.display="none";
+    intercept.style.display="none";
+    n_neighbors.style.display="none";
+    n_clusters.style.display="none";
+  }
+  else if( modelname.value=== 'L' ||  modelname.value=== 'K'){
+    n_clusters.style.display="none";
+    testsize.style.display="inline";
+    if(testsize.value==''){
+      testsize.value=33
+    }
+    if(targets.length==0){
+      button.style.display="none";
+    }
+    else{
+      button.style.display="inline";
+    }
+    if(modelname.value=== 'L'){
+      intercept.style.display="inline";
+      n_neighbors.style.display="none";
+    }
+    else if (modelname.value=== 'K'){
+      intercept.style.display="none";
+      n_neighbors.style.display="inline";
+    }
+  }
+  else if (modelname.value=== 'KM'){
+    button.style.display="inline";
+    testsize.style.display="none";
+    intercept.style.display="none";
+    n_neighbors.style.display="none";
+    n_clusters.style.display="inline";
+  }
+}
+
+modelname.onchange=Change;
+var inputs = document.getElementsByTagName("input"), item;
+for (var i = 0, len = inputs.length; i < len; i++) {
+  item = inputs[i];
+  if( item.id && item.id.indexOf("istarget") >0 ){
+    item.onchange=Change;
+  }
+}
+</script>
+{% endblock %}
+
+{% block content3 %}
+<h4>A tiny description of your data.</h4>
+{% endblock %}
+
+{% block content4 %}
+
+<div class="row">
+<div class="bs-example">
+    <table  class="table" style="margin-left:2%;">
+    <tr>
+      <th >Statistic</th>
+      {% for name in quanti %}
+      <th>{{ name }}</th>
+      {% endfor %}
+    </tr>
+    {% for stat, liste in summary.items %}
+    <tr>
+      <td>{{ stat }}</td>
+      {% for val  in liste %}
+      <td>{{ val }}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+    </table>
+</div>
+
+<div class="bs-example">
+  <table  class="table" style="margin-left:2%;">
+  <tr>
+    {% for name in quali %}
+    <th>{{ name }}-feature</th>
+      <th>Feature count</th>
+    {% endfor %}
+  </tr>
+  {% for line in summary2 %}
+  <tr>
+  {% for el in line %}
+    <td>{{ el }} </td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+  </table>
+  </div>
+</div>
+{% endblock %}
